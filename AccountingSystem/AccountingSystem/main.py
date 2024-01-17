@@ -75,6 +75,8 @@ def submit_out_total_price():
         print(outbound_list)
         total_price_entry.delete(0, "end")
         total_price_entry.insert(0, str(total_price))
+        logger.info(
+            f"{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
         print(showwarning(title="错误", message=f"请输入单价与数量"))
 
@@ -97,6 +99,8 @@ def submit_inv_total_price():
         print(inventory_list)
         inventory_total_price_entry.delete(0, "end")
         inventory_total_price_entry.insert(0, str(total_price))
+        logger.info(
+            f"{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
         print(showwarning(title="错误", message=f"请输入单价与数量"))
 
