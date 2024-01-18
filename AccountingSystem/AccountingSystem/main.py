@@ -34,7 +34,7 @@ def all_money():
 
 
 # 清空表单信息
-def info_print(category, price, count, total):
+def delete_form(category, price, count, total):
     category.delete(0, "end")
     price.delete(0, "end")
     count.delete(0, "end")
@@ -79,6 +79,8 @@ def submit_out_total_price():
         print(outbound_list)
         total_price_entry.delete(0, "end")
         total_price_entry.insert(0, str(total_price))
+        info_text.insert("end",
+                         f"出库：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}\n")
         logger.info(
             f"出库：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
@@ -103,6 +105,8 @@ def submit_inv_total_price():
         print(inventory_list)
         inventory_total_price_entry.delete(0, "end")
         inventory_total_price_entry.insert(0, str(total_price))
+        info_text.insert("end",
+                         f"库存：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}\n")
         logger.info(
             f"库存：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
@@ -157,7 +161,7 @@ total_price_entry = tk.Entry(main_window, width=20)
 
 submit_btn = tk.Button(main_window, width=10, text="提交", command=lambda: submit_out_total_price())
 operate_btn = tk.Button(main_window, width=10, text="清空表单",
-                        command=lambda: info_print(category_entry, price_entry, count_entry, total_price_entry))
+                        command=lambda: delete_form(category_entry, price_entry, count_entry, total_price_entry))
 calc_total_price_btn = tk.Button(main_window, width=10, text="计算总价",
                                  command=lambda: out_count_total_price())
 
@@ -196,8 +200,8 @@ inventory_submit_btn = tk.Button(main_window, width=10, text="提交", command=l
 inventory_calc_total_price_btn = tk.Button(main_window, width=10, text="计算总价",
                                            command=lambda: inv_count_total_price())
 inventory_operate_btn = tk.Button(main_window, width=10, text="清空表单",
-                                  command=lambda: info_print(inventory_category_entry, inventory_price_entry,
-                                                             inventory_count_entry, inventory_total_price_entry))
+                                  command=lambda: delete_form(inventory_category_entry, inventory_price_entry,
+                                                              inventory_count_entry, inventory_total_price_entry))
 
 inventory_category_entry.grid(row=6, column=1, pady=5, padx=5)
 inventory_price_entry.grid(row=6, column=2, pady=5, padx=5)
@@ -214,19 +218,24 @@ alipay_remain_lable = tk.Label(main_window, text="余额宝(元)")
 wechat_count_lable = tk.Label(main_window, text="微信余额(元)")
 wechat_remain_lable = tk.Label(main_window, text="微信零钱通(元)")
 wallet_lable = tk.Label(main_window, text="计算")
+wallet_operate_lable = tk.Label(main_window, text="操作")
 
 wallet_calc_lable.grid(row=7, column=3, pady=20)
 alipay_lable.grid(row=8, column=1)
 alipay_remain_lable.grid(row=8, column=2)
 wechat_count_lable.grid(row=8, column=3)
 wechat_remain_lable.grid(row=8, column=4)
-wallet_lable.grid(row=8, column=5, columnspan=2)
+wallet_operate_lable.grid(row=8, column=5, columnspan=2)
+wallet_lable.grid(row=8, column=7)
 
 alipay_entry = tk.Entry(main_window, width=20)
 alipay_remain_entry = tk.Entry(main_window, width=20)
 wechat_entry = tk.Entry(main_window, width=20)
 wechat_remain_entry = tk.Entry(main_window, width=20)
 
+wallet_operate_btn = tk.Button(main_window, width=10, text="清空表单",
+                               command=lambda: delete_form(alipay_entry, alipay_remain_entry,
+                                                           wechat_entry, wechat_remain_entry))
 wallet_total_btn = tk.Button(main_window, width=10, text="钱包总金额",
                              command=lambda: wallet_total())
 all_money_btn = tk.Button(main_window, width=10, text="总账", command=lambda: all_money())
@@ -235,12 +244,15 @@ alipay_entry.grid(row=9, column=1, pady=5, padx=5)
 alipay_remain_entry.grid(row=9, column=2, pady=5, padx=5)
 wechat_entry.grid(row=9, column=3, pady=5, padx=5)
 wechat_remain_entry.grid(row=9, column=4, pady=5, padx=5)
-wallet_total_btn.grid(row=9, column=5, pady=5, padx=5)
-all_money_btn.grid(row=9, column=6, pady=5, padx=5)
+wallet_operate_btn.grid(row=9, column=5, pady=5, padx=5)
+wallet_total_btn.grid(row=9, column=6, pady=5, padx=5)
+all_money_btn.grid(row=9, column=7, pady=5, padx=5)
 
 # 信息打印
 info_lable = tk.Label(main_window, text="信息打印")
+version_lable = tk.Label(main_window, text="SystemVersion：1.0.0")
 info_lable.grid(row=10, column=3)
+version_lable.grid(row=12, column=3)
 info_text = tk.Text(main_window, height=30, width=120)
 info_text.grid(row=11, column=1, columnspan=7)
 delete_info_btn = tk.Button(main_window, width=10, text="清除打印信息", command=lambda: info_text.delete("1.0", "end"))
