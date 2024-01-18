@@ -27,14 +27,18 @@ def all_money():
     all_money_count = sum(out_price_list_total) + sum(inv_price_list_total) + WALLETTOTAL
     info_text.insert("end", f"总账为：{all_money_count} 元\n")
     logger.info(f"总账为：{all_money_count} 元")
+    outbound_list.clear()
+    inventory_list.clear()
+    out_price_list_total.clear()
+    inv_price_list_total.clear()
 
 
-# 打印信息
-def info_print(list_name, status):
-    for i in list_name:
-        logger.info(f"{i['name']} 单价 {i['price']} {i['number']}支 总价 {i['total_price']}")
-        info_text.insert("end",
-                         str(f"{status}\n{i['name']} 单价 {i['price']} {i['number']} 支 总价 {i['total_price']}\n"))
+# 清空表单信息
+def info_print(category, price, count, total):
+    category.delete(0, "end")
+    price.delete(0, "end")
+    count.delete(0, "end")
+    total.delete(0, "end")
 
 
 # 出库总金额
@@ -43,8 +47,8 @@ def out_count_total_price():
     for price in outbound_list:
         total_price = price["total_price"]
         out_price_list_total.append(total_price)
-    info_text.insert("end", f"出库总金额：{sum(out_price_list_total)}\n")
-    logger.info(f"出库总金额{sum(out_price_list_total)}")
+    info_text.insert("end", f"出库总金额：{sum(out_price_list_total)} 元\n")
+    logger.info(f"出库总金额：{sum(out_price_list_total)} 元")
 
 
 # 库存总金额
@@ -53,8 +57,8 @@ def inv_count_total_price():
     for price in inventory_list:
         total_price = price["total_price"]
         inv_price_list_total.append(total_price)
-    info_text.insert("end", f"库存总金额：{sum(inv_price_list_total)}\n")
-    logger.info(f"库存总金额：{sum(inv_price_list_total)}")
+    info_text.insert("end", f"库存总金额：{sum(inv_price_list_total)} 元\n")
+    logger.info(f"库存总金额：{sum(inv_price_list_total)} 元")
 
 
 # 出库单一品种计算总价，并保存到列表中
@@ -76,7 +80,7 @@ def submit_out_total_price():
         total_price_entry.delete(0, "end")
         total_price_entry.insert(0, str(total_price))
         logger.info(
-            f"{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
+            f"出库：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
         print(showwarning(title="错误", message=f"请输入单价与数量"))
 
@@ -100,7 +104,7 @@ def submit_inv_total_price():
         inventory_total_price_entry.delete(0, "end")
         inventory_total_price_entry.insert(0, str(total_price))
         logger.info(
-            f"{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
+            f"库存：{info_dict['name']} 单价 {info_dict['price']} {info_dict['number']}支 总价 {info_dict['total_price']}")
     else:
         print(showwarning(title="错误", message=f"请输入单价与数量"))
 
@@ -111,8 +115,8 @@ def wallet_total():
     if alipay_entry.get() and alipay_remain_entry.get() and wechat_entry.get() and wechat_remain_entry.get() is not None:
         WALLETTOTAL = int(alipay_entry.get()) + int(alipay_remain_entry.get()) + int(wechat_entry.get()) + int(
             wechat_remain_entry.get())
-        info_text.insert("end", f"钱包总金额为：{WALLETTOTAL} 元\n")
-        logger.info(f"钱包总金额为：{WALLETTOTAL} 元")
+        info_text.insert("end", f"钱包总余额：{WALLETTOTAL} 元\n")
+        logger.info(f"钱包总余额：{WALLETTOTAL} 元")
     else:
         print(showwarning(title="错误", message=f"请输入各个余额，没有就填 0"))
 
@@ -152,7 +156,8 @@ count_entry = tk.Entry(main_window, width=20)
 total_price_entry = tk.Entry(main_window, width=20)
 
 submit_btn = tk.Button(main_window, width=10, text="提交", command=lambda: submit_out_total_price())
-operate_btn = tk.Button(main_window, width=10, text="打印", command=lambda: info_print(outbound_list, "出库"))
+operate_btn = tk.Button(main_window, width=10, text="清空表单",
+                        command=lambda: info_print(category_entry, price_entry, count_entry, total_price_entry))
 calc_total_price_btn = tk.Button(main_window, width=10, text="计算总价",
                                  command=lambda: out_count_total_price())
 
@@ -190,8 +195,9 @@ inventory_total_price_entry = tk.Entry(main_window, width=20)
 inventory_submit_btn = tk.Button(main_window, width=10, text="提交", command=lambda: submit_inv_total_price())
 inventory_calc_total_price_btn = tk.Button(main_window, width=10, text="计算总价",
                                            command=lambda: inv_count_total_price())
-inventory_operate_btn = tk.Button(main_window, width=10, text="打印",
-                                  command=lambda: info_print(inventory_list, "库存"))
+inventory_operate_btn = tk.Button(main_window, width=10, text="清空表单",
+                                  command=lambda: info_print(inventory_category_entry, inventory_price_entry,
+                                                             inventory_count_entry, inventory_total_price_entry))
 
 inventory_category_entry.grid(row=6, column=1, pady=5, padx=5)
 inventory_price_entry.grid(row=6, column=2, pady=5, padx=5)
